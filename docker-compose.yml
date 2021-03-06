@@ -1,0 +1,32 @@
+version: '3.7'
+services:
+  adminer:
+    image: adminer:4.7
+    restart: always
+    ports:
+      - 8081:8080
+
+  mssql:
+      image: mcr.microsoft.com/mssql/server:2019-CU2-ubuntu-16.04
+      environment:
+        MSSQL_USER: "sa"
+        MSSQL_SA_PASSWORD: "Test1337!!!"
+        ACCEPT_EULA: "Y"
+      ports:  
+          - 1433:1433
+      volumes: 
+          - Todo.sqlsystem:/var/opt/mssql/
+          - Todo.sqldata:/var/opt/sqlserver/data
+          - Todo.sqllog:/var/opt/sqlserver/log
+          - Todo.sqlbackup:/var/opt/sqlserver/backup
+      healthcheck:
+        test: ['CMD', '/opt/mssql-tools/bin/sqlcmd', '-U', 'sa', '-P', 'Test1337!!!', '-Q', 'select 1']
+        interval: 10s
+        timeout: 3s
+        retries: 2
+
+volumes:
+  Todo.sqlsystem:
+  Todo.sqldata:
+  Todo.sqllog:
+  Todo.sqlbackup:  
